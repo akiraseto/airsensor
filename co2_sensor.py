@@ -1,8 +1,10 @@
 from __future__ import print_function
 import qwiic_ccs811
-import time
+from time import sleep
 import sys
 from datetime import datetime
+
+CYCLE = 5
 
 def runExample():
     print("\nCCS811 Sensor start \n")
@@ -19,8 +21,7 @@ def runExample():
         print("+", datetime.now().strftime('%H:%M:%S'), "----")
         print("CO2 = {0:0.2f} ppm".format(mySensor.get_co2()))
         print("TVOC = {0:0.2f} ppb".format(mySensor.get_tvoc()))
-        time.sleep(5)
-
+        sleep(CYCLE)
 
 if __name__ == '__main__':
     try:
@@ -28,3 +29,5 @@ if __name__ == '__main__':
     except (KeyboardInterrupt, SystemExit) as exErr:
         print("\nEnding Basic Example")
         sys.exit(0)
+
+# todo:コードを一つに統合する ベースプログラムを作って、機能ごとに分けたプログラムを読み込む
