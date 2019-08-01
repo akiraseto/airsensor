@@ -2,10 +2,10 @@ from __future__ import print_function
 import qwiic_ccs811
 import time
 import sys
-
+from datetime import datetime
 
 def runExample():
-    print("\nSparkFun CCS811 Sensor Basic Example \n")
+    print("\nCCS811 Sensor start \n")
     mySensor = qwiic_ccs811.QwiicCcs811()
 
     if mySensor.is_connected() == False:
@@ -16,9 +16,10 @@ def runExample():
 
     while True:
         mySensor.read_algorithm_results()
-        print("CO2:\t%.3f" % mySensor.get_co2())
-        print("TVOC:\t%.3f\n" % mySensor.get_tvoc())
-        time.sleep(1)
+        print("+", datetime.now().strftime('%H:%M:%S'), "----")
+        print("CO2 = {0:0.2f}".format(mySensor.get_co2()))
+        print("TVOC = {0:0.2f}".format(mySensor.get_tvoc()))
+        time.sleep(5)
 
 
 if __name__ == '__main__':

@@ -4,6 +4,8 @@ import Adafruit_DHT as DHT
 
 PIN = 4
 
+print("\nDHT11 Sensor start \n")
+
 for i in range(10):
     while True:
         humi, temp = DHT.read_retry(DHT.DHT11, PIN)
@@ -14,8 +16,8 @@ for i in range(10):
             continue
         break
     # 情報を表示
-    print("+", datetime.now().strftime('%H:%M:%S'))
-    print("| 湿度=",humi, "%")
-    print("| 温度=",temp,"度")
-    sleep(10)
+    print("+", datetime.now().strftime('%H:%M:%S'), "----")
+    print("| Temp=",temp,"*C")
+    print("| Humi=",humi, "%")
+    sleep(5)
 
