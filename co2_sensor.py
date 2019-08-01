@@ -9,7 +9,7 @@ def runExample():
     mySensor = qwiic_ccs811.QwiicCcs811()
 
     if mySensor.is_connected() == False:
-        print("The Qwiic CCS811 device isn't connected to the system. Please check your connection", file=sys.stderr)
+        print("CCS811 Sensor isn't connected to the system. Please check your connection", file=sys.stderr)
         return
 
     mySensor.begin()
@@ -17,8 +17,8 @@ def runExample():
     while True:
         mySensor.read_algorithm_results()
         print("+", datetime.now().strftime('%H:%M:%S'), "----")
-        print("CO2 = {0:0.2f}".format(mySensor.get_co2()))
-        print("TVOC = {0:0.2f}".format(mySensor.get_tvoc()))
+        print("CO2 = {0:0.2f} ppm".format(mySensor.get_co2()))
+        print("TVOC = {0:0.2f} ppb".format(mySensor.get_tvoc()))
         time.sleep(5)
 
 

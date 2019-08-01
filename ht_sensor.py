@@ -17,7 +17,7 @@ for i in range(10):
         break
     # 情報を表示
     print("+", datetime.now().strftime('%H:%M:%S'), "----")
-    print("| Temp=",temp,"*C")
-    print("| Humi=",humi, "%")
+    print("Temp = {0:0.2f} *C".format(temp))
+    print("Humi = {0:0.2f} %".format(humi))
     sleep(5)
 
