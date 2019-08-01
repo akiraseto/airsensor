@@ -6,21 +6,19 @@
 - TVOC（空気の汚れ具合）取得  
 
 必要モジュール  
-``
+```sh
 sudo pip3 install sparkfun-qwiic-i2c
-``
-
+```
 qwiic_ccs811  
-``
+```sh
 git clone https://github.com/sparkfun/Qwiic_CCS811_Py.git
 python setup.py install
-``
-
+```
 i2c設定変更  
-``
+```sh
 sudo vi /boot/config.txt
 dtparam=i2c_arm_baudrate=10000
-``
+```
 
 ### 数値の目安
 #### ＜おおまかな二酸化炭素濃度の目安＞
@@ -48,11 +46,11 @@ dtparam=i2c_arm_baudrate=10000
 - Sealevel Pressure 海面気圧
 
 必要モジュール  
-``
+```sh
 git clone https://github.com/adafruit/Adafruit_Python_BMP.git
 cd Adafruit_Python_BMP
 sudo python3 setup.py install
-``
+```
 
 ### 数値の目安
 標準大気圧:1013.25 hPa＝1気圧
@@ -64,11 +62,11 @@ sudo python3 setup.py install
 - Humidity 湿度
 
 必要モジュール  
-``
+```sh
 git clone https://github.com/adafruit/Adafruit_Python_DHT.git
 cd Adafruit_Python_DHT
 sudo python3 setup.py install
-``
+```
 
 ### 数値の目安
 
@@ -94,5 +92,5 @@ sudo python3 setup.py install
 - 80~85:暑くて汗が出る
 - 85~:  暑くてたまらない
 
-不快指数がDI（Tは乾球気温℃、Hは湿度％）  
+不快指数がDI（Tは乾球気温℃、Hは湿度％）
 DI=0.81T + 0.01H x (0.99T-14.3)+46.3
