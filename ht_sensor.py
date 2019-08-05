@@ -5,10 +5,10 @@ PIN = 4
 humi, temp = DHT.read_retry(DHT.DHT11, PIN)
 
 if humi == None or temp == None:
-    print("\nDHT11 Connection is Broken..\n")
+    print("DHT11 Connection is Broken..")
     sys.exit(0)
 else:
-    print("\nDHT11 Sensor start \n")
+    print("DHT11 Sensor start ")
 
 def run():
     if (humi > 90) or (temp > 50):

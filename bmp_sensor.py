@@ -4,10 +4,10 @@ import sys
 try:
     sensor = BMP085.BMP085()
 except:
-    print("\nBMP180 Connection is Broken..\n")
+    print("BMP180 Connection is Broken..")
     sys.exit(0)
 else:
-    print("\nBMP180 Sensor start \n")
+    print("BMP180 Sensor start ")
 
 def run():
     temp = sensor.read_temperature()

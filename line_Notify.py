@@ -6,8 +6,7 @@ TOKEN = config.TOKEN
 API = 'https://notify-api.line.me/api/notify'
 
 def lineNotify(last_post,message):
-    # LINEに通知
-    # ただし10分は通知しない
+    # 10分は通知しない
     now = datetime.now()
     sec = (now - last_post).seconds
     if sec < 10 * 60: return
