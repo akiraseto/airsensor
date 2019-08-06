@@ -1,17 +1,20 @@
 import Adafruit_DHT as DHT
 import sys
 
-PIN = 4
-humi, temp = DHT.read_retry(DHT.DHT11, PIN)
+class DhtSensor:
 
-if humi == None or temp == None:
-    print("DHT11 Connection is Broken..")
-    sys.exit(0)
-else:
-    print("DHT11 Sensor start ")
+    def __init__(self):
+        PIN = 4
+        self.humi, self.temp = DHT.read_retry(DHT.DHT11, PIN)
 
-def run():
-    if (humi > 90) or (temp > 50):
-        print("error value:", humi, temp)
+        if self.humi == None or self.temp == None:
+            print("DHT11 Connection is Broken..")
+            sys.exit(0)
+        else:
+            print("DHT11 Sensor start ")
 
-    return temp, humi
+    def run(self):
+        if (self.humi > 90) or (self.temp > 50):
+            print("error value:", self.humi, self.temp)
+
+        return self.temp, self.humi
