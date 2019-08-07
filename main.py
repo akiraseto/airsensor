@@ -12,6 +12,9 @@ def main():
     CYCLE = 5
     last_post = datetime(2000, 1, 1)  # 適当に初期化
 
+    # CLI引数を取得
+    args = sys.argv
+
     htsensor = ht_sensor.DhtSensor()
     co2sensor = co2_sensor.Co2Sensor()
     bmpsensor = bmp_sensor.BmpSensor()
@@ -55,7 +58,14 @@ def main():
                 lineNotify(message)
                 last_post = now
 
-        # todo:Google spread sheetにログを取る
+        # todo:Google spread sheetにログを取る。やらないかも
+        # CSVで保存（CSVが使いまわししやすい）
+
+        # LINENotifyを引数lineで即実行。homebridgeにも使用。
+        # todo:むしろ、main使わずに独立したコマンドでCSV最新からデータ取得のほうがいいか？
+        if args[1] == 'line':
+            lineNotify(message)
+            sys.exit(0)
 
         print("")
         sleep(CYCLE)
