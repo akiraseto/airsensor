@@ -94,3 +94,13 @@ sudo python3 setup.py install
 
 不快指数がDI（Tは乾球気温℃、Hは湿度％）
 DI=0.81T + 0.01H x (0.99T-14.3)+46.3
+
+### DataBase
+#### sqlite3を使用
+```sh
+sudo apt-get install sqlite3
+sqlite3 airsensor.db
+# SQLでtableを作成
+create table airsensor(id INTEGER PRIMARY KEY AUTOINCREMENT, temp REAL, humi REAL, di REAL, co2 REAL, tvoc REAL, press REAL, alti REAL, sea REAL, date TEXT);
+```
+
