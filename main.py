@@ -31,7 +31,7 @@ def main():
     while True:
         temp_ht, humi = htsensor.run()
         co2, tvoc = co2sensor.run()
-        temp_bmp, press, alti, sea = bmpsensor.run()
+        temp, press, alti, sea = bmpsensor.run()
 
         now = datetime.now()
         date_time = "{0:%Y-%m-%d %H:%M:%S}".format(now)
@@ -41,7 +41,7 @@ def main():
             continue
 
         # 値を整える
-        temp = round((temp_ht + temp_bmp) / 2, 2)
+        temp = round(temp, 2)
         humi = round(humi, 2)
         co2 = round(co2, 2)
         tvoc = round(tvoc, 2)
