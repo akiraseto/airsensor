@@ -10,10 +10,10 @@ from line_Notify import lineNotify
 
 def main():
     # lineNotifyする数値
-    NOTIFY_TEMP = 38
-    # NOTIFY_DI = 75
-    NOTIFY_DI = 90
-    NOTIFY_CO2 = 700
+    NOTIFY_TEMP = 35
+    NOTIFY_DI = 85
+    # NOTIFY_CO2 = 850
+    NOTIFY_CO2 = 5000
     last_post = datetime(2000, 1, 1)  # 適当に初期化
 
     # 取得間隔(秒)
@@ -57,8 +57,8 @@ def main():
         print("+", date_time, "----", end="")
         print(message)
 
-        # LINEに通知
-        if temp > NOTIFY_TEMP or di > NOTIFY_DI or co2 > NOTIFY_CO2:
+        # LINEに通知&CO2外れ値を除去
+        if (temp > NOTIFY_TEMP or di > NOTIFY_DI or co2 > NOTIFY_CO2) and co2 < 5000 and tvoc < 2000:
             sec = (now - last_post).seconds
             # 10分は通知しない
             if sec > 10 * 60:
