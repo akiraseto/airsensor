@@ -9,19 +9,25 @@ import bmp_sensor
 from line_Notify import lineNotify
 
 def main():
+    # 取得間隔(秒)
+    # 第一引数に数字を与えると取得間隔になる
+    cycle = 1 * 60
+    arg = sys.argv
+    if len(arg) > 1:
+        cycle = int(arg[1])
+
     # lineNotifyする数値
     NOTIFY_TEMP = 35
     NOTIFY_DI = 85
     # NOTIFY_CO2 = 850
-    NOTIFY_CO2 = 5000
-    last_post = datetime(2000, 1, 1)  # 適当に初期化
+    NOTIFY_CO2 = 2000
+    #lineへの通知間隔
+    LINE_CYCLE = 10 * 60
+    last_line = datetime(2000, 1, 1)  # 適当に初期化
 
-    # 取得間隔(秒)
-    # 第一引数に数字を与えると取得間隔になる
-    cycle = 60
-    arg = sys.argv
-    if len(arg) > 1:
-        cycle = int(arg[1])
+    #DBへの書き込み間隔
+    DB_CYCLE = 15 * 60
+    last_db = datetime(2000, 1, 1)  # 適当に初期化
 
     htsensor = ht_sensor.DhtSensor()
     co2sensor = co2_sensor.Co2Sensor()
@@ -59,21 +65,25 @@ def main():
 
         # LINEに通知&CO2外れ値を除去
         if (temp > NOTIFY_TEMP or di > NOTIFY_DI or co2 > NOTIFY_CO2) and co2 < 5000 and tvoc < 2000:
-            sec = (now - last_post).seconds
-            # 10分は通知しない
-            if sec > 10 * 60:
+            interval_line = (now - last_line).seconds
+            # ○分間は通知しない
+            if interval_line > LINE_CYCLE:
                 lineNotify(message)
-                last_post = now
+                last_line = now
         print("")
 
-        # sqlite3で保存
-        dbname = '/home/pi/airsensor/airsensor.db'
-        con = sqlite3.connect(dbname)
-        cur = con.cursor()
-        data = (temp, humi, di, co2, tvoc, press, alti, sea, date_time)
-        cur.execute('insert into airsensor (temp, humi, di, co2, tvoc, press, alti, sea, date) values (?, ?, ?, ?, ?, ?, ?, ?, ?)', data)
-        con.commit()
-        con.close()
+        interval_db = (now - last_db).seconds
+        # ○分間隔でDB書き込み
+        if interval_db > DB_CYCLE:
+            # sqlite3で保存
+            dbname = '/home/pi/airsensor/airsensor.db'
+            con = sqlite3.connect(dbname)
+            cur = con.cursor()
+            data = (temp, humi, di, co2, tvoc, press, alti, sea, date_time)
+            cur.execute('insert into airsensor (temp, humi, di, co2, tvoc, press, alti, sea, date) values (?, ?, ?, ?, ?, ?, ?, ?, ?)', data)
+            con.commit()
+            con.close()
+            last_db = now
 
         sleep(cycle)
 

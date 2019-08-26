@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -5,10 +6,23 @@ import plotly.graph_objs as go
 
 from database import db_session
 from models import Data
+import datetime
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-data = db_session.query(Data.date, Data.temp, Data.humi, Data.di, Data.co2, Data.tvoc, Data.press, Data.alti, Data.sea).all()
+data = db_session.query(Data.date, Data.temp, Data.humi, Data.di, Data.co2, Data.tvoc, Data.press, Data.alti, Data.sea, Data.id).all()
+
+before_day = datetime.datetime.now() - datetime.timedelta(days = 1)
+
+_data = []
+for datum in data:
+    d = datetime.datetime.strptime(datum.date, '%Y-%m-%d %H:%M:%S')
+    if d > before_day:
+        _data.append(datum)
+
+# print(len(_data))
+# print(_data[0])
+# exit()
 
 dates = []
 temp = []
@@ -20,6 +34,7 @@ press = []
 alti = []
 sea = []
 
+# for datum in _data:
 for datum in data:
     dates.append(datum.date)
     temp.append(datum.temp)
@@ -31,10 +46,17 @@ for datum in data:
     alti.append(datum.alti)
     sea.append(datum.sea)
 
+# print(len(dates))
+# print(dates[0])
+# exit()
+
+
+
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.title = 'Air Condition'
 
-# server = app.server
+# apache2起動で必要
+server = app.server
 
 
 app.layout = html.Div(children=[
@@ -156,5 +178,5 @@ app.layout = html.Div(children=[
 ],style={'textAlign': 'center'}
 )
 
-if __name__ == '__main__':
-    app.run_server(debug=True)
+# if __name__ == '__main__':
+#     app.run_server(debug=True)

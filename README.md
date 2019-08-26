@@ -104,3 +104,5 @@ sqlite3 airsensor.db
 create table airsensor(id INTEGER PRIMARY KEY AUTOINCREMENT, temp REAL, humi REAL, di REAL, co2 REAL, tvoc REAL, press REAL, alti REAL, sea REAL, date TEXT);
 ```
 
+### 閲覧
+apache2に組み込んで、localhost:8080で表示
