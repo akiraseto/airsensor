@@ -57,7 +57,7 @@ def update_graph(factor):
     # todo:weekがグラフ表示されなくなったので確認する
     if factor == 'week':
         global data_week
-        before_day = datetime.datetime.now() - datetime.timedelta(days = 1)
+        before_day = datetime.datetime.now() - datetime.timedelta(days = 7)
 
         if len(data_week) < 1:
             for datum in data_full:
