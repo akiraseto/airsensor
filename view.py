@@ -7,50 +7,14 @@ import plotly.graph_objs as go
 from database import db_session
 from models import Data
 import datetime
+from dateutil.relativedelta import relativedelta
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-data = db_session.query(Data.date, Data.temp, Data.humi, Data.di, Data.co2, Data.tvoc, Data.press, Data.alti, Data.sea, Data.id).all()
-
-before_day = datetime.datetime.now() - datetime.timedelta(days = 1)
-
-_data = []
-for datum in data:
-    d = datetime.datetime.strptime(datum.date, '%Y-%m-%d %H:%M:%S')
-    if d > before_day:
-        _data.append(datum)
-
-# print(len(_data))
-# print(_data[0])
-# exit()
-
-dates = []
-temp = []
-humi = []
-di = []
-co2 = []
-tvoc = []
-press = []
-alti = []
-sea = []
-
-# for datum in _data:
-for datum in data:
-    dates.append(datum.date)
-    temp.append(datum.temp)
-    humi.append(datum.humi)
-    di.append(datum.di)
-    co2.append(datum.co2)
-    tvoc.append(datum.tvoc)
-    press.append(datum.press)
-    alti.append(datum.alti)
-    sea.append(datum.sea)
-
-# print(len(dates))
-# print(dates[0])
-# exit()
-
-
+# data_full = db_session.query(Data.date, Data.temp, Data.humi, Data.co2, Data.tvoc, Data.press).all()
+data_full = db_session.query(Data.date, Data.temp, Data.humi, Data.di, Data.co2, Data.tvoc, Data.press, Data.alti, Data.sea, Data.id).all()
+data_week = []
+data_month = []
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.title = 'Air Condition'
@@ -58,10 +22,77 @@ app.title = 'Air Condition'
 # apache2起動で必要
 server = app.server
 
-
 app.layout = html.Div(children=[
     html.H2(children='airsensor 家の空気環境'),
-    html.Div(className='row',children=[
+    html.Div(children=[
+        dcc.RadioItems(
+            id = 'radiocheck',
+            options=[
+                {'label': 'week', 'value': 'week'},
+                {'label': 'month', 'value': 'month'},
+                {'label': 'all', 'value': 'all'},
+            ],
+            value='week',
+            labelStyle = {'display': 'inline-block', 'margin-left':'15px', 'margin-bottom':'5px'},
+        ),
+    ]),
+
+    html.Div(className='row',id='grapharea')
+], style={'textAlign': 'center'})
+
+@app.callback(
+    dash.dependencies.Output('grapharea', 'children'),
+    [dash.dependencies.Input('radiocheck', 'value')]
+)
+
+def update_graph(factor):
+    data = []
+    dates = []
+    temp = []
+    humi = []
+    co2 = []
+    tvoc = []
+    press = []
+
+    # todo:weekがグラフ表示されなくなったので確認する
+    if factor == 'week':
+        global data_week
+        before_day = datetime.datetime.now() - datetime.timedelta(days = 1)
+
+        if len(data_week) < 1:
+            for datum in data_full:
+                d = datetime.datetime.strptime(datum.date, '%Y-%m-%d %H:%M:%S')
+                if d > before_day:
+                    data.append(datum)
+            data_week = data
+        else:
+            data = data_week
+
+    elif factor == 'month':
+        global data_month
+        before_day = datetime.datetime.now() - relativedelta(months=1)
+
+        if len(data_month) < 1:
+            for datum in data_full:
+                d = datetime.datetime.strptime(datum.date, '%Y-%m-%d %H:%M:%S')
+                if d > before_day:
+                    data.append(datum)
+            data_month = data
+        else:
+            data = data_month
+
+    elif factor == 'all':
+        data = data_full
+
+    for datum in data:
+        dates.append(datum.date)
+        temp.append(datum.temp)
+        humi.append(datum.humi)
+        co2.append(datum.co2)
+        tvoc.append(datum.tvoc)
+        press.append(datum.press)
+
+    return [
         html.Div(className='six columns', children=[
             html.Div(children=dcc.Graph(
                 id='left-graph',
@@ -81,15 +112,7 @@ app.layout = html.Div(children=[
                             mode='lines+markers',
                             name='湿度',
                             yaxis='y2'
-                        ),
-                        # go.Scatter(
-                        # x=dates,
-                        # y=di,
-                        # mode='lines+markers',
-                        # name='不快指数',
-                        # yaxis='y2',
-                        # marker = dict(color="rgb(220, 220, 220)")
-                        # )
+                        )
                     ],
                     'layout': go.Layout(
                         height=800,
@@ -104,10 +127,7 @@ app.layout = html.Div(children=[
             ))
         ]),
 
-
-        html.Div(
-            className='six columns',
-            children=html.Div([
+        html.Div(className='six columns',children=html.Div([
                 dcc.Graph(
                     id='right-top-graph',
                     figure={
@@ -152,31 +172,17 @@ app.layout = html.Div(children=[
                                 opacity=0.7,
                                 yaxis='y1'
                             ),
-                            # go.Scatter(
-                            #     x=dates,
-                            #     y=alti,
-                            #     mode='lines+markers',
-                            #     name='海抜',
-                            #     yaxis='y2'
-                            # )
                         ],
                         'layout': go.Layout(
                             height=400,
                             title='気圧',
                             xaxis=dict(title='日時'),
                             yaxis=dict(title='気圧',side='left', showgrid=True, range=[min(press)-5, max(press)+5]),
-                            # yaxis2=dict(title='海抜',side='right',overlaying='y', showgrid=False, range=[min(alti)-10, max(alti)+10]),
                             margin=dict(l=50, r=60, b=50, t=50),
                             legend={'x': 0.03, 'y': 1}
                         ),
                     }
                 )
-            ],
-            )
-        )
-    ])
-],style={'textAlign': 'center'}
-)
+            ],))
+    ]
 
-# if __name__ == '__main__':
-#     app.run_server(debug=True)

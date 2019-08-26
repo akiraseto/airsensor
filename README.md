@@ -106,3 +106,9 @@ create table airsensor(id INTEGER PRIMARY KEY AUTOINCREMENT, temp REAL, humi REA
 
 ### 閲覧
 apache2に組み込んで、localhost:8080で表示
+
+### TODO
+いつか余裕があれば  
+- 読み込む量を調整（full） 1時間に1個？
+- ラズパイ→google spreadsheet→
+   herokuアクセスしたらspreadsheetからデータ取得
