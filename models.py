@@ -1,7 +1,6 @@
 # coding: utf-8
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, Date
 from database import Base
-from datetime import datetime as dt
 
 #Table情報
 class Data(Base):

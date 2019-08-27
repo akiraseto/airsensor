@@ -11,10 +11,9 @@ from dateutil.relativedelta import relativedelta
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-# data_full = db_session.query(Data.date, Data.temp, Data.humi, Data.co2, Data.tvoc, Data.press).all()
-data_full = db_session.query(Data.date, Data.temp, Data.humi, Data.di, Data.co2, Data.tvoc, Data.press, Data.alti, Data.sea, Data.id).all()
 data_week = []
 data_month = []
+data_all = []
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app.title = 'Air Condition'
@@ -26,7 +25,7 @@ app.layout = html.Div(children=[
     html.H2(children='airsensor 家の空気環境'),
     html.Div(children=[
         dcc.RadioItems(
-            id = 'radiocheck',
+            id = 'radiobutton',
             options=[
                 {'label': 'week', 'value': 'week'},
                 {'label': 'month', 'value': 'month'},
@@ -42,7 +41,7 @@ app.layout = html.Div(children=[
 
 @app.callback(
     dash.dependencies.Output('grapharea', 'children'),
-    [dash.dependencies.Input('radiocheck', 'value')]
+    [dash.dependencies.Input('radiobutton', 'value')]
 )
 
 def update_graph(factor):
@@ -54,17 +53,12 @@ def update_graph(factor):
     tvoc = []
     press = []
 
-    # todo:weekがグラフ表示されなくなったので確認する
     if factor == 'week':
         global data_week
         before_day = datetime.datetime.now() - datetime.timedelta(days = 7)
 
         if len(data_week) < 1:
-            for datum in data_full:
-                d = datetime.datetime.strptime(datum.date, '%Y-%m-%d %H:%M:%S')
-                if d > before_day:
-                    data.append(datum)
-            data_week = data
+            data = db_session.query(Data.date, Data.temp, Data.humi, Data.di, Data.co2, Data.tvoc, Data.press, Data.alti, Data.sea, Data.id).filter(Data.date >= before_day).all()
         else:
             data = data_week
 
@@ -73,16 +67,15 @@ def update_graph(factor):
         before_day = datetime.datetime.now() - relativedelta(months=1)
 
         if len(data_month) < 1:
-            for datum in data_full:
-                d = datetime.datetime.strptime(datum.date, '%Y-%m-%d %H:%M:%S')
-                if d > before_day:
-                    data.append(datum)
-            data_month = data
+            data = db_session.query(Data.date, Data.temp, Data.humi, Data.di, Data.co2, Data.tvoc, Data.press, Data.alti, Data.sea, Data.id).filter(Data.date >= before_day).all()
         else:
             data = data_month
 
     elif factor == 'all':
-        data = data_full
+        if len(data_all) < 1:
+            data = db_session.query(Data.date, Data.temp, Data.humi, Data.di, Data.co2, Data.tvoc, Data.press, Data.alti, Data.sea, Data.id).all()
+        else:
+            data = data_all
 
     for datum in data:
         dates.append(datum.date)
@@ -185,4 +178,3 @@ def update_graph(factor):
                 )
             ],))
     ]
-
