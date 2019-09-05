@@ -104,8 +104,23 @@ sqlite3 airsensor.db
 create table airsensor(id INTEGER PRIMARY KEY AUTOINCREMENT, temp REAL, humi REAL, di REAL, co2 REAL, tvoc REAL, press REAL, alti REAL, sea REAL, date TEXT);
 ```
 
-### 閲覧
-apache2に組み込んで、localhost:8080で表示
+### WEBサイト化
+apache2に組み込んで、ローカル環境限定WEBサイト化する。  
+localhost:8080で表示できるようにする
+
+#### 設定
+apache2とwsgiでつなぎこみ
+
+```sh
+#ライブラリ追加
+sudo apt install libapache2-mod-wsgi-py3
+#下記に新たなconfファイルを作成
+/etc/apache2/sites-available/
+
+a2ensiteで有効化
+#再起動
+sudo systemctl reload apache2
+```
 
 ### TODO
 いつか余裕があれば  
